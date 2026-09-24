@@ -6,7 +6,7 @@ import CreateTask from "@/components/CreateTask";
 import TaskCard from "@/components/TaskCard";
 import Navbar from "@/components/Navbar";
 
-const API_URL = "http://127.0.0.1:5000";
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export default function DashboardPage() {
   const [user, setUser] = useState<any>(null);
