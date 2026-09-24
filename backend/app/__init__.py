@@ -15,15 +15,12 @@ def create_app():
 
     app.config.from_object(Config)
 
-    frontend_url = os.getenv(
-        "FRONTEND_URL",
-        "http://localhost:3000"
-    )
+    
 
     CORS(
-        app,
-        origins=[frontend_url],
-        supports_credentials=True
+    app,
+    origins=[Config.FRONTEND_URL],
+    supports_credentials=True
     )
 
     app.register_blueprint(user_bp)
