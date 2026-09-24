@@ -7,7 +7,7 @@ from app.config import Config
 from app.services.scheduler_service import start_scheduler
 from app.routes.task_routes import task_bp
 from app.routes.user_routes import user_bp
-from app.routes.email_routes import email_bp
+
 
 
 def create_app():
@@ -26,7 +26,6 @@ def create_app():
         supports_credentials=True
     )
 
-    app.register_blueprint(email_bp)
     app.register_blueprint(user_bp)
     app.register_blueprint(task_bp)
 
