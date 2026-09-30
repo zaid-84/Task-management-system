@@ -1,3 +1,4 @@
+
 from flask import Blueprint, jsonify, request
 from app.middleware.auth_middleware import require_auth
 from datetime import datetime
@@ -15,6 +16,7 @@ from app.services.task_service import (
     user_exists
 )
 
+from app.services.user_service import sync_user
 
 
 task_bp = Blueprint(
@@ -23,10 +25,28 @@ task_bp = Blueprint(
     url_prefix="/api/tasks"
 )
 
+
 @task_bp.route("/", methods=["POST"])
 @require_auth
 def create_task_route():
-    
+
+    current_user = request.current_user
+
+    print("AUTH USER ID:", current_user.id)
+    print("AUTH USER EMAIL:", current_user.email)
+    try:
+        synced_user = sync_user(current_user)
+
+        print("SYNCED USER:", synced_user)
+
+    except Exception as error:
+        print("SYNC USER ERROR:", error)
+
+        return jsonify({
+            "success": False,
+            "message": f"Failed to sync user: {str(error)}"
+        }), 500
+
     data = request.get_json() or {}
 
     title = data.get("title")
@@ -51,9 +71,12 @@ def create_task_route():
             "success": False,
             "message": "Assigned user does not exist"
         }), 400
+
     if due_date:
         try:
-            datetime.fromisoformat(due_date.replace("Z", "+00:00"))
+            datetime.fromisoformat(
+                due_date.replace("Z", "+00:00")
+            )
         except ValueError:
             return jsonify({
                 "success": False,
@@ -61,7 +84,6 @@ def create_task_route():
             }), 400
 
     try:
-        current_user = request.current_user
 
         # Create task
         task = create_task(
@@ -138,6 +160,7 @@ def get_task(task_id):
             "success": False,
             "message": str(error)
         }), 404
+
 
 @task_bp.route("/<task_id>/complete", methods=["PATCH"])
 @require_auth
@@ -223,7 +246,8 @@ def complete_task_route(task_id):
             "success": False,
             "message": str(error)
         }), 500
-        
+
+
 @task_bp.route("/", methods=["GET"])
 @require_auth
 def get_my_tasks():
@@ -242,4 +266,3 @@ def get_my_tasks():
             "success": False,
             "message": str(error)
         }), 500
-        
