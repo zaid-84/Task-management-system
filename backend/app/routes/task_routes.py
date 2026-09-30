@@ -34,15 +34,13 @@ def create_task_route():
 
     current_user = request.current_user
 
-    print("AUTH USER ID:", current_user.id)
-    print("AUTH USER EMAIL:", current_user.email)
     try:
         synced_user = sync_user(current_user)
 
-        print("SYNCED USER:", synced_user)
+       
 
     except Exception as error:
-        print("SYNC USER ERROR:", error)
+        
 
         return jsonify({
             "success": False,
