@@ -124,7 +124,7 @@ def create_task_route():
             assignee_email=assigned_user["email"],
             assignee_name=assigned_user.get("name") or "User",
             task_title=title,
-            task_description=description
+            task_description=description,
             assigned_by_name=creator.get("name") or "User"
         )
 
