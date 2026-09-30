@@ -5,7 +5,8 @@ def send_task_assignment_email(
     assignee_email,
     assignee_name,
     task_title,
-    task_description
+    task_description,
+    assigned_by_name
 ):
     subject = f"New Task Assigned: {task_title}"
 
@@ -13,6 +14,9 @@ def send_task_assignment_email(
 Hello {assignee_name},
 
 You have been assigned a new task.
+
+Assigned by:
+{assigned_by_name}
 
 Task:
 {task_title}

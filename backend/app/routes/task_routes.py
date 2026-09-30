@@ -19,6 +19,8 @@ from app.services.task_service import (
 from app.services.user_service import sync_user
 
 
+
+
 task_bp = Blueprint(
     "tasks",
     __name__,
@@ -105,6 +107,17 @@ def create_task_route():
         )
 
         assigned_user = user_response.data
+        
+        creator_response = (
+            supabase
+            .table("users")
+            .select("name")
+            .eq("id", current_user.id)
+            .single()
+            .execute()
+        )
+
+        creator = creator_response.data
 
         # Send notification email
         send_task_assignment_email(
@@ -112,6 +125,7 @@ def create_task_route():
             assignee_name=assigned_user.get("name") or "User",
             task_title=title,
             task_description=description
+            assigned_by_name=creator.get("name") or "User"
         )
 
         return jsonify({
